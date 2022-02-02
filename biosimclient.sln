@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31112.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "biosimclient", "biosimclient\biosimclient.csproj", "{F45CBCD2-E581-451B-97A2-514A0CBC287A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "biosimclienttest", "biosimclienttest\biosimclienttest.csproj", "{B0370368-1981-4D51-AC26-8237FCDFA3EF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F45CBCD2-E581-451B-97A2-514A0CBC287A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F45CBCD2-E581-451B-97A2-514A0CBC287A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F45CBCD2-E581-451B-97A2-514A0CBC287A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F45CBCD2-E581-451B-97A2-514A0CBC287A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0370368-1981-4D51-AC26-8237FCDFA3EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0370368-1981-4D51-AC26-8237FCDFA3EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0370368-1981-4D51-AC26-8237FCDFA3EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0370368-1981-4D51-AC26-8237FCDFA3EF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {40A4A506-6A8D-4C3F-B053-5772BE06C036}
+	EndGlobalSection
+EndGlobal
