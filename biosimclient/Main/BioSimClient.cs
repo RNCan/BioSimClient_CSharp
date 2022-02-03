@@ -18,6 +18,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -49,10 +50,14 @@ namespace biosimclient.Main
 
 	public sealed class BioSimClient
 	{
+		private static readonly int Revision = 1;
 
 		private static int MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = -1; // not set yet
 		private static int MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = -1; // not set yet
 		private static int MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST = 1000; // not set yet
+		private static bool? IS_CLIENT_SUPPORTED = null;
+		private static string CLIENT_MESSAGE;
+
 
 		static readonly string FieldSeparator = ",";
 	
@@ -65,7 +70,8 @@ namespace biosimclient.Main
 
 		private static readonly string NORMAL_API = "BioSimNormals";
 		private static readonly string MODEL_LIST_API = "BioSimModelList";
-		private static readonly string BIOSIMMAXCOORDINATES = "BioSimMaxCoordinatesPerRequest";
+		//		private static readonly string BIOSIMMAXCOORDINATES = "BioSimMaxCoordinatesPerRequest";
+		private static readonly string BIOSIMSTATUS = "BioSimStatus";
 		private static readonly string BIOSIMMODELHELP = "BioSimModelHelp";
 		private static readonly string BIOSIMMODELDEFAULTPARAMETERS = "BioSimModelDefaultParameters";
 		private static readonly string BIOSIMWEATHER = "BioSimWeather";
@@ -150,7 +156,7 @@ namespace biosimclient.Main
 
 		private static int getMaximumNbLocationsPerBatchNormals() //throws BioSimClientException, BioSimServerException {
 		{
-			SetMaxCapacities();
+//			SetMaxCapacities();
 			return MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS;
 		}
 
@@ -191,23 +197,71 @@ namespace biosimclient.Main
 			return stringList;
 		}
 
-		private static void SetMaxCapacities() // throws BioSimClientException, BioSimServerException {
-		{
-			if (MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION == -1 || MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS == -1)
+		//private static void SetMaxCapacities() // throws BioSimClientException, BioSimServerException {
+		//{
+		//	if (MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION == -1 || MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS == -1)
+		//	{
+		//		string query = $"crev={Revision}";
+		//		string serverReply = GetStringFromConnection(BIOSIMSTATUS, query).ToString();
+		//		try
+		//		{
+		//			String[] maxCapacities = serverReply.Split(FieldSeparator);
+		//			MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = int.Parse(maxCapacities[0]);
+		//			MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = int.Parse(maxCapacities[1]);
+		//		}
+		//		catch (FormatException e)
+		//		{
+		//			throw new BioSimClientException("The server reply could not be parsed: " + e.Message);
+		//		}
+		//	}
+		//}
+
+		// TODO MF2021should be synchronized
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		private static void IsClientSupported()
+        {
+			if (!IS_CLIENT_SUPPORTED.HasValue)
 			{
-				String serverReply = GetStringFromConnection(BIOSIMMAXCOORDINATES, null).ToString();
+				string query = $"crev={Revision}";
+				string serverReply = GetStringFromConnection(BIOSIMSTATUS, query).ToString();   // is returned in JSON format
+				OrderedDictionary statusMap = null;
 				try
 				{
-					String[] maxCapacities = serverReply.Split(FieldSeparator);
-					MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = int.Parse(maxCapacities[0]);
-					MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = int.Parse(maxCapacities[1]);
-				}
-				catch (FormatException e)
+					statusMap = JsonConvert.DeserializeObject<OrderedDictionary>(serverReply);
+				} 
+				catch (Exception e) 
 				{
-					throw new BioSimClientException("The server reply could not be parsed: " + e.Message);
+					throw new BioSimClientException("Something wrong happened while retrieving the server status: " + e.Message);
 				}
+
+				if (!(Boolean)statusMap["IsInitCompleted"])
+					throw new BioSimClientException("The server initialization is not completed!");
+				
+				if (!statusMap.Contains("settings"))
+					throw new BioSimClientException("The status map does not contain the entry settings!");
+				
+				try
+				{
+					OrderedDictionary settingsMap = JsonConvert.DeserializeObject<OrderedDictionary>(statusMap["settings"].ToString());
+                    MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = Convert.ToInt32(settingsMap["NbMaxCoordinatesNormals"]);
+                    MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = Convert.ToInt32(settingsMap["NbMaxCoordinatesWG"]);
+                    IS_CLIENT_SUPPORTED = settingsMap.Contains("IsClientSupported") ? (bool)settingsMap["IsClientSupported"] : true;
+                    CLIENT_MESSAGE = settingsMap.Contains("ClientMessage") ? (string)settingsMap["ClientMessage"] : "";
+                    //				String[] maxCapacities = serverReply.split(FieldSeparator);
+                    //				MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = Integer.parseInt(maxCapacities[0]);
+                    //				MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = Integer.parseInt(maxCapacities[1]);
+                }
+				catch (Exception e)
+				{
+					throw new BioSimClientException("The server status could not be parsed!");
+				}
+				if (IS_CLIENT_SUPPORTED.Value && CLIENT_MESSAGE.Length > 0)
+					Console.WriteLine("WARNING: " + CLIENT_MESSAGE);
 			}
-		}
+			if (!IS_CLIENT_SUPPORTED.Value)
+				throw new BioSimClientException(CLIENT_MESSAGE);
+
+        }
 
 		private static String ProcessElevationM(IBioSimPlot location)
 		{
@@ -316,8 +370,9 @@ namespace biosimclient.Main
 				List<IBioSimPlot> locations,
 				RCP? rcp,
 				ClimateModel? climModel,
-				List<Month> averageOverTheseMonths) // throws BioSimClientException, BioSimServerException {
+				List<Month> averageOverTheseMonths) 
 		{
+			IsClientSupported();
 			if (locations.Count > BioSimClient.MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST)
 				throw new BioSimClientException($"The maximum number of locations for a single request is {MAXIMUM_NB_LOCATIONS_IN_A_SINGLE_REQUEST}");
 
@@ -393,6 +448,7 @@ namespace biosimclient.Main
 		 */
 		public static List<string> GetModelList() //throws BioSimClientException, BioSimServerException {
 		{
+			IsClientSupported();
 			List<string> copy = new();
 			copy.AddRange(GetReferenceModelList());
 			return copy;
@@ -401,6 +457,7 @@ namespace biosimclient.Main
 
 		public static string GetModelHelp(String modelName) // throws BioSimClientException, BioSimServerException {
 		{
+			IsClientSupported();
 			if (modelName == null) 
 				throw new ArgumentException("THe modelName parameter cannot be set to null!");
 
@@ -411,6 +468,7 @@ namespace biosimclient.Main
 	
 		public static BioSimParameterMap GetModelDefaultParameters(String modelName) // throws BioSimClientException, BioSimServerException {
 		{
+			IsClientSupported();
 			if (modelName == null) 
 				throw new ArgumentException("THe modelName parameter cannot be set to null!");
 
@@ -681,6 +739,7 @@ namespace biosimclient.Main
 				int repModel,
 				List<BioSimParameterMap> additionalParms) // throws BioSimClientException, BioSimServerException {
 		{
+			IsClientSupported();
 			if (rep < 1 || repModel < 1)
 				throw new ArgumentException("The rep and repModel parameters should be equal to or greater than 1!");
 
@@ -725,7 +784,7 @@ namespace biosimclient.Main
 
 		private static int GetMaximumNbLocationsPerBatchWeatherGeneration() // throws BioSimClientException, BioSimServerException {
 		{
-			SetMaxCapacities();
+//			SetMaxCapacities();
 			return MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION;
 		}
 
