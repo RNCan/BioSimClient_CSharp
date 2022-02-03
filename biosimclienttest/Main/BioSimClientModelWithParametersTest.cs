@@ -101,7 +101,7 @@ namespace biosimclienttest
 		 * Tests if the weather generation over past and future time intervals.
 		 */
 		// TODO MF2022-01-31 reenable this test when the model is enabled on the server side
-		//		[TestMethod]
+		[TestMethod]
 		public void testingWithDegreeDaysAndGrowingSeason()
 		{
 			List<IBioSimPlot> locations = new();

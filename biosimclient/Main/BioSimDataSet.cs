@@ -119,7 +119,7 @@ namespace biosimclient.Main
 						{
 							lineRead[i] = double.Parse(valueStr);
 						}
-						catch (FormatException e2)
+						catch (FormatException)
 						{
 							lineRead[i] = valueStr;
 						}
@@ -130,7 +130,7 @@ namespace biosimclient.Main
 						{
 							lineRead[i] = int.Parse(valueStr);
 						}
-						catch (FormatException e2)
+						catch (FormatException)
 						{
 							lineRead[i] = valueStr;
 						}

@@ -415,7 +415,7 @@ namespace biosimclient.Main
 				throw new ArgumentException("THe modelName parameter cannot be set to null!");
 
 			String serverReply = GetStringFromConnection(BIOSIMMODELDEFAULTPARAMETERS, "model=" + modelName).ToString();
-			String[] parms = serverReply.Split("\\*");
+			String[] parms = serverReply.Split("*");
 			BioSimParameterMap parmMap = new BioSimParameterMap();
 			foreach (String parm in parms)
 			{
@@ -455,7 +455,8 @@ namespace biosimclient.Main
 			BioSimDataSet dataSet = null;
 			int locationId = 0;
 			IBioSimPlot location = null;
-			bool properlyInitialized = false;
+			bool isDataSetProperlyInitialized = false;
+			string modName = null;
 			OrderedDictionary resultMap = new();
 			foreach (String line in serverReply)
 			{
@@ -466,8 +467,10 @@ namespace biosimclient.Main
 				else if (BioSimClient.GetModelList().Contains(line.Trim()))
 				{
 					resultMap = new();
-					outputMap.Add(line.Trim(), resultMap);
+					modName = line.Trim();
+					outputMap.Add(modName, resultMap);
 					locationId = 0;
+					isDataSetProperlyInitialized = false;
 				}
 				else if (line.ToLowerInvariant().StartsWith(fieldLineStarter))
 				{ // means it is a new location
@@ -483,13 +486,16 @@ namespace biosimclient.Main
 					dataSet = new BioSimDataSet(fieldNames);
 					resultMap.Add(location, dataSet);
 					locationId++;
-					properlyInitialized = true;
+					isDataSetProperlyInitialized = true;
 				}
 				else
 				{
-					if (!properlyInitialized)
+					if (!isDataSetProperlyInitialized)
 					{
-						throw new BioSimClientException(serverReply.ToString());
+						if (modName != null)
+							outputMap[modName] = new BioSimClientException(line);
+						else 
+							throw new BioSimClientException(serverReply.ToString());
 					}
 					else
 					{
