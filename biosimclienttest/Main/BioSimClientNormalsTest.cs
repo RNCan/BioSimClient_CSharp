@@ -34,17 +34,17 @@ namespace biosimclienttest
 
 
 
-        [ClassInitialize]
-        public static void InitalizeClass(TestContext c)
-        {
-			BioSimClient.IsLocal = true;
-        }
+		[ClassInitialize]
+		public static void InitalizeClass(TestContext c)
+		{
+			BioSimClientTestSettings.SetForTest(true);
+		}
 
 		[ClassCleanup]
 		public static void CleanUp()
-        {
-			BioSimClient.IsLocal = false;
-        }
+		{
+			BioSimClientTestSettings.SetForTest(false);
+		}
 
 
 

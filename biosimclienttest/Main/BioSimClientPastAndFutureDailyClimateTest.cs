@@ -33,17 +33,17 @@ namespace biosimclienttest
     public class BioSimClientPastAndFutureDailyClimateTest
     {
 
-        [ClassInitialize]
-        public static void InitalizeClass(TestContext c)
-        {
-            BioSimClient.IsLocal = true;
-        }
+		[ClassInitialize]
+		public static void InitalizeClass(TestContext c)
+		{
+			BioSimClientTestSettings.SetForTest(true);
+		}
 
-        [ClassCleanup]
-        public static void CleanUp()
-        {
-            BioSimClient.IsLocal = false;
-        }
+		[ClassCleanup]
+		public static void CleanUp()
+		{
+			BioSimClientTestSettings.SetForTest(false);
+		}
 
 		/*
 		 * Tests if the weather generation over past and future time intervals.

@@ -43,7 +43,8 @@ namespace biosimclient.Main
 					if (i == 0)
 						completeString.Append(s);
 					else
-						completeString.Append("\n" + s);
+						completeString.Append(Environment.NewLine + s);
+					i++;
 				}
 				return completeString.ToString();
 			}

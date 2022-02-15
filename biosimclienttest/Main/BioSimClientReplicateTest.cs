@@ -36,13 +36,13 @@ namespace biosimclienttest
 		[ClassInitialize]
 		public static void InitalizeClass(TestContext c)
 		{
-			BioSimClient.IsLocal = true;
+			BioSimClientTestSettings.SetForTest(true);
 		}
 
 		[ClassCleanup]
 		public static void CleanUp()
 		{
-			BioSimClient.IsLocal = false;
+			BioSimClientTestSettings.SetForTest(false);
 		}
 
 
@@ -134,6 +134,7 @@ namespace biosimclienttest
 			}
 			Console.WriteLine("Ascending order tested in replicated generated climate!");
 			BioSimClient.ResetClientConfiguration();
+			BioSimClientTestSettings.SetForTest(true);
 		}
 
 		[TestMethod]
@@ -153,6 +154,7 @@ namespace biosimclienttest
 			BioSimDataSet dataset = (BioSimDataSet)oRCP85_RCM4def[locations[0]];
 			Assert.AreEqual(5, dataset.GetNumberOfObservations());
 			BioSimClient.ResetClientConfiguration();
+			BioSimClientTestSettings.SetForTest(true);
 		}
 
 
@@ -174,6 +176,7 @@ namespace biosimclienttest
 			BioSimDataSet dataset = (BioSimDataSet)oRCP85_RCM4def[locations[0]];
 			Assert.AreEqual(30 * 2, dataset.GetNumberOfObservations());
 			BioSimClient.ResetClientConfiguration();
+			BioSimClientTestSettings.SetForTest(true);
 		}
 
 

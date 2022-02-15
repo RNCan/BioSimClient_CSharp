@@ -84,7 +84,8 @@ namespace biosimclient.Main
 
 		private static double totalServerRequestDuration = 0.0;
 
-		public static bool IsLocal = false;       // set to true to connect on 5000 locally 
+		private static bool IsLocal = false;       
+		private static bool IsTesting = false;
 
 		static bool ForceClimateGenerationEnabled = false;  // default value
 
@@ -93,10 +94,20 @@ namespace biosimclient.Main
 
 		private static string AddQueryIfAny(string urlString, string query)
 		{
+			bool isThereQuery = false;
+			string finalUrlQuery;
 			if (query != null && query.Length > 0)
-				return urlString.Trim() + "?" + query;
+            {
+				isThereQuery = true;
+				finalUrlQuery = urlString.Trim() + "?" + query;
+			}
 			else
-				return urlString;
+				finalUrlQuery = urlString;
+
+			if (BioSimClient.IsTesting)
+				finalUrlQuery = isThereQuery ? finalUrlQuery + "&cid=testJava" : finalUrlQuery + "?cid=testJava";
+
+			return finalUrlQuery;
 		}
 
 
@@ -167,6 +178,8 @@ namespace biosimclient.Main
 		{
 			NbNearestNeighbours = null;
 			ForceClimateGenerationEnabled = false;
+			IsLocal = false;
+			IsTesting = false;
 		}
 
 
@@ -197,28 +210,10 @@ namespace biosimclient.Main
 			return stringList;
 		}
 
-		//private static void SetMaxCapacities() // throws BioSimClientException, BioSimServerException {
-		//{
-		//	if (MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION == -1 || MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS == -1)
-		//	{
-		//		string query = $"crev={Revision}";
-		//		string serverReply = GetStringFromConnection(BIOSIMSTATUS, query).ToString();
-		//		try
-		//		{
-		//			String[] maxCapacities = serverReply.Split(FieldSeparator);
-		//			MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = int.Parse(maxCapacities[0]);
-		//			MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = int.Parse(maxCapacities[1]);
-		//		}
-		//		catch (FormatException e)
-		//		{
-		//			throw new BioSimClientException("The server reply could not be parsed: " + e.Message);
-		//		}
-		//	}
-		//}
 
 		// TODO MF2021should be synchronized
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		private static void IsClientSupported()
+		public static string IsClientSupported()
         {
 			if (!IS_CLIENT_SUPPORTED.HasValue)
 			{
@@ -247,11 +242,8 @@ namespace biosimclient.Main
                     MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = Convert.ToInt32(settingsMap["NbMaxCoordinatesWG"]);
                     IS_CLIENT_SUPPORTED = settingsMap.Contains("IsClientSupported") ? (bool)settingsMap["IsClientSupported"] : true;
                     CLIENT_MESSAGE = settingsMap.Contains("ClientMessage") ? (string)settingsMap["ClientMessage"] : "";
-                    //				String[] maxCapacities = serverReply.split(FieldSeparator);
-                    //				MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION = Integer.parseInt(maxCapacities[0]);
-                    //				MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS = Integer.parseInt(maxCapacities[1]);
                 }
-				catch (Exception e)
+				catch (Exception)
 				{
 					throw new BioSimClientException("The server status could not be parsed!");
 				}
@@ -260,7 +252,7 @@ namespace biosimclient.Main
 			}
 			if (!IS_CLIENT_SUPPORTED.Value)
 				throw new BioSimClientException(CLIENT_MESSAGE);
-
+			return CLIENT_MESSAGE;
         }
 
 		private static String ProcessElevationM(IBioSimPlot location)
@@ -481,7 +473,7 @@ namespace biosimclient.Main
 				if (keyValue.Length > 1)
 					parmMap.AddParameter(keyValue[0], keyValue[1]);
 				else
-					parmMap.AddParameter(keyValue[0], null); // TODO MF2022-01-27 Possibility of bug here. Check that.
+					parmMap.AddParameter(keyValue[0], "");
 			}
 			return parmMap;
 		}
@@ -784,7 +776,6 @@ namespace biosimclient.Main
 
 		private static int GetMaximumNbLocationsPerBatchWeatherGeneration() // throws BioSimClientException, BioSimServerException {
 		{
-//			SetMaxCapacities();
 			return MAXIMUM_NB_LOCATIONS_PER_BATCH_WEATHER_GENERATION;
 		}
 
@@ -838,6 +829,14 @@ namespace biosimclient.Main
 			else
 				return 4; // default value
 		}
+
+		public static bool IsLocalConnectionEnabled() { return IsLocal; }
+
+		public static void SetLocalConnectionEnabled(bool b) { IsLocal = b; }
+
+		public static bool IsTestModeEnabled() { return IsTesting; }
+
+		public static void SetTestModeEnabled(bool b) { IsTesting = b; }
 
 		public static double GetLastServerRequestDuration()
 		{

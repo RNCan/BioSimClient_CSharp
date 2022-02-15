@@ -25,9 +25,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace biosimclienttest
 {
@@ -38,13 +35,13 @@ namespace biosimclienttest
 		[ClassInitialize]
 		public static void InitalizeClass(TestContext c)
 		{
-			BioSimClient.IsLocal = true;
+			BioSimClientTestSettings.SetForTest(true);
 		}
 
 		[ClassCleanup]
 		public static void CleanUp()
 		{
-			BioSimClient.IsLocal = false;
+			BioSimClientTestSettings.SetForTest(false);
 		}
 
 
@@ -89,6 +86,33 @@ namespace biosimclienttest
 			string outputString = JsonConvert.SerializeObject(oMap);
 			return outputString;
 		}
+
+
+		[TestMethod]
+		public void testingModelDefaultParameters() 
+		{
+			List<string> modelList = BioSimClient.GetModelList();
+			foreach (string model in modelList) 
+			{
+				Console.WriteLine($"Trying to get default parameters for model: {model}");
+				BioSimParameterMap parmsMap = BioSimClient.GetModelDefaultParameters(model);
+				Assert.IsTrue(parmsMap != null);
+			}
+		}
+
+		[TestMethod]
+		public void testingModelHelp() 
+		{
+			List<string> modelList = BioSimClient.GetModelList();
+			foreach (string model in modelList) 
+			{
+				Console.WriteLine("Trying to get help for model: {model}");
+				string modelHelp = BioSimClient.GetModelHelp(model);
+				Assert.IsTrue(modelHelp.Contains(Environment.NewLine));
+			}
+		}
+
+
 	}
 
 }

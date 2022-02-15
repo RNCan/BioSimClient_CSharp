@@ -33,17 +33,17 @@ namespace biosimclienttest
     public class BioSimClientModelNbNearestNeighboursTest
     {
 
-        [ClassInitialize]
-        public static void InitalizeClass(TestContext c)
-        {
-            BioSimClient.IsLocal = true;
-        }
+		[ClassInitialize]
+		public static void InitalizeClass(TestContext c)
+		{
+			BioSimClientTestSettings.SetForTest(true);
+		}
 
-        [ClassCleanup]
-        public static void CleanUp()
-        {
-            BioSimClient.IsLocal = false;
-        }
+		[ClassCleanup]
+		public static void CleanUp()
+		{
+			BioSimClientTestSettings.SetForTest(false);
+		}
 
 		/*
 		 * Testing ClimaticQc_Annual model and ensuring that the default nb of nearest neighbour is 4.
@@ -52,6 +52,7 @@ namespace biosimclienttest
 		public void testingWithDefaultFourClimateStations()
 		{
 			BioSimClient.ResetClientConfiguration();
+			BioSimClientTestSettings.SetForTest(true);
 			List<IBioSimPlot> locations = new();
 			IBioSimPlot plot = BioSimClientTestSettings.Instance.Plots[0];
 			locations.Add(plot);
@@ -81,12 +82,14 @@ namespace biosimclienttest
 
 			Assert.AreEqual(referenceString, observedString);
 			BioSimClient.ResetClientConfiguration();
+			BioSimClientTestSettings.SetForTest(true);
 		}
 
 		[TestMethod]
 		public void testingWithTwentyClimateStations()
 		{
 			BioSimClient.ResetClientConfiguration();
+			BioSimClientTestSettings.SetForTest(true);
 			List<IBioSimPlot> locations = new();
 			IBioSimPlot plot = BioSimClientTestSettings.Instance.Plots[0];
 			locations.Add(plot);
@@ -116,6 +119,7 @@ namespace biosimclienttest
 
 			Assert.IsFalse(referenceString.Equals(observedString));
 			BioSimClient.ResetClientConfiguration();
+			BioSimClientTestSettings.SetForTest(true);
 		}
 
 

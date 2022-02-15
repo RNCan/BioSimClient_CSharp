@@ -32,7 +32,7 @@ namespace biosimclienttest
 {
     internal class BioSimClientTestSettings
     {
-        internal static bool Validation = true;
+        internal static bool Validation = false;
 
         internal static readonly BioSimClientTestSettings Instance = new();
 		internal string ProjectRootPath { get; private set; }
@@ -66,6 +66,11 @@ namespace biosimclienttest
             using StreamReader r = new(validationFilename);
             string referenceString = r.ReadToEnd();
             return referenceString;
+        }
+
+        internal static void SetForTest(bool b)
+        {
+            BioSimClient.SetTestModeEnabled(b);
         }
 
 
