@@ -26,11 +26,9 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace biosimclient.Main
 {
@@ -47,7 +45,9 @@ namespace biosimclient.Main
         }
     }
 
-
+	/// <summary>
+	/// A client for the BioSIM Web API.
+	/// </summary>
 	public sealed class BioSimClient
 	{
 		private static readonly int Revision = 1;
@@ -70,7 +70,6 @@ namespace biosimclient.Main
 
 		private static readonly string NORMAL_API = "BioSimNormals";
 		private static readonly string MODEL_LIST_API = "BioSimModelList";
-		//		private static readonly string BIOSIMMAXCOORDINATES = "BioSimMaxCoordinatesPerRequest";
 		private static readonly string BIOSIMSTATUS = "BioSimStatus";
 		private static readonly string BIOSIMMODELHELP = "BioSimModelHelp";
 		private static readonly string BIOSIMMODELDEFAULTPARAMETERS = "BioSimModelDefaultParameters";
@@ -155,7 +154,7 @@ namespace biosimclient.Main
 			//{
 			//	throw new BioSimClientException("Unable to confirm certificate for secure connection!");
 			//}
-			catch (IOException e)
+			catch (IOException)
 			{
 				throw new BioSimClientException("Unable to connect to the server!");
 			} finally
@@ -167,13 +166,12 @@ namespace biosimclient.Main
 
 		private static int getMaximumNbLocationsPerBatchNormals() //throws BioSimClientException, BioSimServerException {
 		{
-//			SetMaxCapacities();
 			return MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS;
 		}
 
-		/**
-		 * Reset the configuration to its initial values.
-		*/
+		/// <summary>
+		/// Reset the configuration to its initial values.
+		/// </summary>
 		public static void ResetClientConfiguration()
 		{
 			NbNearestNeighbours = null;
@@ -185,23 +183,16 @@ namespace biosimclient.Main
 
 		private static BioSimStringList GetCompleteString(HttpResponseMessage connection, bool isError)
 		{
-		//		long initTime = System.currentTimeMillis();
 			BioSimStringList stringList = new();
 			try
 			{
 				Stream s = connection.Content.ReadAsStream();
-				//InputStream is;
-				//if (isError)
-				//	is = connection.getErrorStream();
-				//else
-				//	is = connection.getInputStream();
 				StreamReader br = new(s);
-				String lineStr;
+				string lineStr;
 				while ((lineStr = br.ReadLine()) != null)
 				{
 					stringList.Add(lineStr);
 				}
-				//			System.out.println("Time to make the complete string: " + (System.currentTimeMillis() - initTime) + " ms.");
 			}
 			catch (IOException e)
 			{
@@ -211,7 +202,16 @@ namespace biosimclient.Main
 		}
 
 
-		// TODO MF2021should be synchronized
+		/// <summary>
+		/// Check if the server supports the client. 
+		/// <br></br>
+		/// <br></br>
+		/// If the client is not supported, an exception is thrown. The server 
+		/// can also provide a message that is embedded in the exception if the client is not supported or simply
+		/// displayed as a warning if the client is supported. 
+		/// </summary>
+		/// 
+		/// <returns>A string that is a eventual message from the BioSIM Web API</returns>
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public static string IsClientSupported()
         {
@@ -345,18 +345,16 @@ namespace biosimclient.Main
 			}
 		}
 
-		/**
-		 * Retrieves the normals and compiles the mean or sum over some months.
-		* @param period a Period enum variable
-		* @param locations a List of BioSimPlot instances
-		* @param rcp an RCP enum variable (if null the server takes the RCP 4.5 by default 
-		* @param climModel a ClimateModel enum variable (if null the server takes the RCM4 climate model
-		* @param averageOverTheseMonths the months over which the mean or sum is to be
-		*                               calculated. If empty or null the method returns
-		*                               the monthly averages.
-		* @return a Map with the BioSimPlot instances as keys and BioSimDataSet instances as values.
-		* @throws BioSimClientException if the client fails or a BioSimServerException if the server fails 
-		*/
+
+		/// <summary>
+		/// Retrieve the normals and compile the mean or sum over several months
+		/// </summary>
+		/// <param name="period">A Period enum variable</param>
+		/// <param name="locations">A List of IBioSimPlot instances</param>
+		/// <param name="rcp">An RCP enum variable (if null the server takes the RCP 4.5 by default)</param>
+		/// <param name="climModel">A ClimateModel enum variable (if null the server takes the RCM4 climate model)</param>
+		/// <param name="averageOverTheseMonths">A list of Monte enum variables over which the mean or sum is to be calculated. If empty or null the method returns the montly averages</param>
+		/// <returns>An OrderedDictionary instance with the normals</returns>
 		public static OrderedDictionary GetNormals(
 				Period period,
 				List<IBioSimPlot> locations,
@@ -392,16 +390,14 @@ namespace biosimclient.Main
 		}
 
 
-
-		/**
-		 * Retrieves the monthly normals.
-		 * @param period a Period enum variable
-		 * @param locations a List of BioSimPlot instances
-		 * @param rcp an RCP enum variable (if null the server takes the RCP 4.5 by default 
-		 * @param climModel a ClimateModel enum variable (if null the server takes the RCM4 climate model
-		 * @return a Map with the BioSimPlot instances as keys and BioSimDataSet instances as values.
-		 * @throws BioSimClientException if the client fails or a BioSimServerException if the server fails 
-		 */
+		/// <summary>
+		/// Provide the monthly normals.
+		/// </summary>
+		/// <param name="period">A Period enum variable</param>
+		/// <param name="locations">A List of IBioSimPlot instances</param>
+		/// <param name="rcp">An RCP enum variable (if null the server takes the RCP 4.5 by default)</param>
+		/// <param name="climModel">A ClimateModel enum variable (if null the server takes the RCM4 climate model)</param>
+		/// <returns>An OrderedDictionary instance with the normals</returns>
 		public static OrderedDictionary GetMonthlyNormals(Period period,
 			List<IBioSimPlot> locations,
 			RCP? rcp,
@@ -411,15 +407,14 @@ namespace biosimclient.Main
 		}
 
 
-		/**
-		 * Retrieves the yearly normals.
-		 * @param period a Period enum variable
-		 * @param locations a List of BioSimPlot instances
-		 * @param rcp an RCP enum variable (if null the server takes the RCP 4.5 by default 
-		 * @param climModel a ClimateModel enum variable (if null the server takes the RCM4 climate model
-		 * @return a Map with the BioSimPlot instances as keys and BioSimDataSet instances as values.
-		 * @throws BioSimClientException if the client fails or a BioSimServerException if the server fails 
-		 */
+		/// <summary>
+		/// Provide the yearly normals.
+		/// </summary>
+		/// <param name="period">A Period enum variable</param>
+		/// <param name="locations">A List of IBioSimPlot instances</param>
+		/// <param name="rcp">An RCP enum variable (if null the server takes the RCP 4.5 by default)</param>
+		/// <param name="climModel">A ClimateModel enum variable (if null the server takes the RCM4 climate model)</param>
+		/// <returns>An OrderedDictionary instance with the normals</returns>
 		public static OrderedDictionary GetAnnualNormals(
 				Period period,
 				List<IBioSimPlot> locations,
@@ -431,13 +426,21 @@ namespace biosimclient.Main
 
 
 
-
 		/**
 		 * Returns the names of the available models. This is a clone of the
 		 * true list to avoid any intended changes in the model list.
 		 * 
 		 * @return a List of String instances
 		 */
+
+
+		/// <summary>
+		/// Return the names of the available models. 
+		/// <br></br>
+		/// <br></br>
+		/// This is a clone of the true list to avoid any unintended changes in the model list.
+		/// </summary>
+		/// <returns>a list of strings</returns>
 		public static List<string> GetModelList() //throws BioSimClientException, BioSimServerException {
 		{
 			IsClientSupported();
@@ -446,8 +449,12 @@ namespace biosimclient.Main
 			return copy;
 		}
 
-
-		public static string GetModelHelp(String modelName) // throws BioSimClientException, BioSimServerException {
+		/// <summary>
+		/// Provide help for a particular model.
+		/// </summary>
+		/// <param name="modelName">the model name</param>
+		/// <returns>a description of the model</returns>
+		public static string GetModelHelp(String modelName) 
 		{
 			IsClientSupported();
 			if (modelName == null) 
@@ -457,7 +464,11 @@ namespace biosimclient.Main
 			return serverReply;
 		}
 
-	
+		/// <summary>
+		/// Provide the default parameters of a particular model.
+		/// </summary>
+		/// <param name="modelName">the model name</param>
+		/// <returns>the model parameters nested into a BioSimParameterMap instance</returns>
 		public static BioSimParameterMap GetModelDefaultParameters(String modelName) // throws BioSimClientException, BioSimServerException {
 		{
 			IsClientSupported();
@@ -479,7 +490,7 @@ namespace biosimclient.Main
 		}
 
 
-		private static List<string> GetReferenceModelList() // throws BioSimClientException, BioSimServerException {
+		private static List<string> GetReferenceModelList() 
 		{
 			if (ReferenceModelList == null)
 			{
@@ -498,7 +509,7 @@ namespace biosimclient.Main
 		private static void ReadLines(BioSimStringList serverReply,
 			String fieldLineStarter,
 			List<IBioSimPlot> refListForLocations,
-			OrderedDictionary outputMap) // throws BioSimClientException, BioSimServerException {
+			OrderedDictionary outputMap) 
 		{
 			//		long initTime;
 			//		long totalTime = 0;
@@ -524,12 +535,9 @@ namespace biosimclient.Main
 				}
 				else if (line.ToLowerInvariant().StartsWith(fieldLineStarter))
 				{ // means it is a new location
-					if (dataSet != null)
-					{   // must be indexed before instantiating a new DataSet
-						//					initTime = System.currentTimeMillis();
+					if (dataSet != null)    // must be indexed before instantiating a new DataSet
 						dataSet.IndexFieldType();
-						//					totalTime += System.currentTimeMillis() - initTime;
-					}
+
 					location = refListForLocations[locationId];
 					string[] fields = line.Split(FieldSeparator);
 					List<string> fieldNames = fields.ToList();
@@ -550,24 +558,18 @@ namespace biosimclient.Main
 					else
 					{
 						Object[] fields = line.Split(FieldSeparator).ToList().ToArray<object>();
-						//					initTime = System.currentTimeMillis();
 						dataSet.AddObservation(fields);
-						//					totalTime += System.currentTimeMillis() - initTime;
 					}
 				}
 			}
 			if (dataSet != null)
-			{
-				//			initTime = System.currentTimeMillis();
 				dataSet.IndexFieldType();   // last DataSet has not been instantiated so it needs to be here.
-											//			totalTime += System.currentTimeMillis() - initTime;
-			}
+
 			if (outputMap.Count == 0)
 			{
 				foreach (DictionaryEntry newEntry in resultMap) 
 					outputMap.Add(newEntry.Key, newEntry.Value);
 			}
-			//		System.out.println("Time to create observations: " + totalTime + " ms");
 		}
 
 		private static OrderedDictionary InternalCalculationForClimateVariables(int fromYr,
@@ -575,10 +577,10 @@ namespace biosimclient.Main
 			List<IBioSimPlot> locations,
 			RCP? rcp,
 			ClimateModel? climMod,
-			List<String> modelNames,
+			List<string> modelNames,
 			int rep,
 			int repModel,
-			List<BioSimParameterMap> additionalParms) // throws BioSimClientException, BioSimServerException {
+			List<BioSimParameterMap> additionalParms) 
 		{
 			StringBuilder query = ConstructCoordinatesQuery(locations);
 			query.Append("&from=" + fromYr);
@@ -608,10 +610,9 @@ namespace biosimclient.Main
 			if (additionalParms != null)
 			{
 				StringBuilder sbParms = new();
-				int i = 0;
 				foreach (BioSimParameterMap oMap in additionalParms)
 				{
-					String strForThisMap = oMap == null || oMap.IsEmpty() ? "null" : oMap.ToString();
+					string strForThisMap = oMap == null || oMap.IsEmpty() ? "null" : oMap.ToString();
 					if (sbParms.Length == 0)
 						sbParms.Append(strForThisMap);
 					else
@@ -628,26 +629,23 @@ namespace biosimclient.Main
 			return outputMap;
 		}
 
-		/**
-		 * Returns a model output for a particular time interval. 
-		 * 
-		 * The "modelnames" argument sets the models to be applied on
-		 * the generated meteorological time series. It should be among the strings returned by the 
-		 * getModelList static method. Generating the climate is time consuming. The 
-		 * generated climate is stored on the server and it can be re used with some 
-		 * other models. 
-		 * 
-		 * @param fromYr starting date (yr) of the period (inclusive)
-		 * @param toYr ending date (yr) of the period (inclusive)
-		 * @param locations the locations of the plots (BioSimPlot instances)
-		 * @param modelNames a list of strings representing the model names
-		 * @param rcp an RCP enum variable (by default RCP 4.5)
-		 * @param climMod a ClimateModel enum variable (by default RCM 4)
-		 * @param rep the number of replicates in climate generation if needed. Should be equal to or greater than 1. 
-		 * @param additionalParms a list of BioSimParameterMap instances that contains the eventual additional parameters for the models
-		 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
-		 * @throws BioSimClientException if the client fails or BioSimServerException if the server fails
-		 */
+
+		/// <summary>
+		/// Generate the meteorogical time series and apply one or many models on these series.
+		/// <br></br>
+		/// <br></br>
+		/// The "modelnames" argument sets the models to be applied on the generated meteorological time series. 
+		/// These model names should be contained in the list produced by the GetModelList method. 
+		/// </summary>
+		/// <param name="fromYr">The start date (yr) of the period (inclusive)</param>
+		/// <param name="toYr">The end date (yr) of the period (inclusive)</param>
+		/// <param name="locations">A list of IBioSimPlot instances</param>
+		/// <param name="rcp">An RCP enum variable (by default RCP 4.5)</param>
+		/// <param name="climMod">A ClimateModel enum variable (by default RCM 4)</param>
+		/// <param name="modelNames">a list of strings representing the model names</param>
+		/// <param name="rep">The number of replicates in climate generation if needed. Should be equal to or greater than 1. By default it is set to 1.</param>
+		/// <param name="additionalParms">A list of BioSimParameterMap instances that contain the eventual additional parameters for the models</param>
+		/// <returns>An OrderedDictionary instance with the model names as key</returns>
 		public static OrderedDictionary GenerateWeather(int fromYr,
 				int toYr,
 				List<IBioSimPlot> locations,
@@ -662,25 +660,21 @@ namespace biosimclient.Main
 
 
 
-		/**
-		 * Returns a model output for a particular time interval. 
-		 * 
-		 * The "modelnames" parameter sets the models to be applied on
-		 * the generated climate. It should be one of the strings returned by the 
-		 * getModelList static method. Generating the climate is time consuming. The 
-		 * generated climate is stored on the server and it can be re used with some 
-		 * other models. The number of replicate is set to 1.
-		 * 
-		 * @param fromYr starting date (yr) of the period (inclusive)
-		 * @param toYr ending date (yr) of the period (inclusive)
-		 * @param locations the locations of the plots (BioSimPlot instances)
-		 * @param modelNames a list of strings representing the model names
-		 * @param rcp an RCP enum variable (by default RCP 4.5)
-		 * @param climMod a ClimateModel enum variable (by default RCM 4)
-		 * @param additionalParms a list of BioSimParameterMap instances that contains the eventual additional parameters for the models
-		 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
-		 * @throws BioSimClientException if the client fails or BioSimServerException if the server fails
-		 */
+		/// <summary>
+		/// Generate the meteorogical time series and apply one or many models on these series.
+		/// <br></br>
+		/// <br></br>
+		/// The "modelnames" argument sets the models to be applied on the generated meteorological time series. 
+		/// These model names should be contained in the list produced by the GetModelList method. 
+		/// </summary>
+		/// <param name="fromYr">The start date (yr) of the period (inclusive)</param>
+		/// <param name="toYr">The end date (yr) of the period (inclusive)</param>
+		/// <param name="locations">A list of IBioSimPlot instances</param>
+		/// <param name="rcp">An RCP enum variable (by default RCP 4.5)</param>
+		/// <param name="climMod">A ClimateModel enum variable (by default RCM 4)</param>
+		/// <param name="modelNames">a list of strings representing the model names</param>
+		/// <param name="additionalParms">A list of BioSimParameterMap instances that contain the eventual additional parameters for the models</param>
+		/// <returns>An OrderedDictionary instance with the model names as key</returns>
 		public static OrderedDictionary GenerateWeather(int fromYr,
 			int toYr,
 			List<IBioSimPlot> locations,
@@ -693,34 +687,23 @@ namespace biosimclient.Main
 		}
 
 
-
-
-		/**
-		 * Returns a model output for a particular period. In this method, the ephemeral 
-		 * mode can be disabled by setting the argument isEphemeral to false. In such 
-		 * a case, the generated climate is cached in memory. This involves
-		 * two request to the server. The first aims at generating the climate, whereas
-		 * the second applies a model on the generated climate in order to obtain the 
-		 * desired variables. The ephemeral model should be preferred when a single model
-		 * is to be applied to some locations. If several models are to be applied to the
-		 * some locations, then the ephemeral mode should be disabled. The climate is then
-		 * generated only once for all the models. This implies several calls to this method
-		 * with exactly the same signature except for the argument "modelName". This "modelName"
-		 * argument sets the model to be applied on the generated climate. It should be one 
-		 * of the strings returned by the getModelList static method. 
-		 * 
-		 * @param fromYr starting date (yr) of the period (inclusive)
-		 * @param toYr ending date (yr) of the period (inclusive)
-		 * @param locations the locations of the plots (BioSimPlot instances)
-		 * @param rcp an RCP enum variable (by default RCP 4.5)
-		 * @param climMod a ClimateModel enum variable (by default RCM 4)
-		 * @param modelNames a list of strings representing the model names
-		 * @param rep the number of replicates in climate generation if needed. Should be equal to or greater than 1. 
-		 * @param repModel the number of replicates in the model if needed. Should be equal to or greater than 1. 
-		 * @param additionalParms a list of BioSimParameterMap instances that contains the eventual additional parameters for the models
-		 * @return a LinkedHashMap of BioSimPlot instances (keys) and climate variables (values)
-		 * @throws BioSimClientException if the client fails or BioSimServerException if the server fails
-		 */
+		/// <summary>
+		/// Generate the meteorogical time series and apply one or many models on these series.
+		/// <br></br>
+		/// <br></br>
+		/// The "modelnames" argument sets the models to be applied on the generated meteorological time series. 
+		/// These model names should be contained in the list produced by the GetModelList method. 
+		/// </summary>
+		/// <param name="fromYr">The start date (yr) of the period (inclusive)</param>
+		/// <param name="toYr">The end date (yr) of the period (inclusive)</param>
+		/// <param name="locations">A list of IBioSimPlot instances</param>
+		/// <param name="rcp">An RCP enum variable (by default RCP 4.5)</param>
+		/// <param name="climMod">A ClimateModel enum variable (by default RCM 4)</param>
+		/// <param name="modelNames">a list of strings representing the model names</param>
+		/// <param name="rep">The number of replicates in climate generation if needed. Should be equal to or greater than 1. By default it is set to 1.</param>
+		/// <param name="repModel">The number of replicates in the model. Should be equal to or greater than 1. By default it is set to 1.</param>
+		/// <param name="additionalParms">A list of BioSimParameterMap instances that contain the eventual additional parameters for the models</param>
+		/// <returns>An OrderedDictionary instance with the model names as key</returns>
 		public static OrderedDictionary GenerateWeather(int fromYr,
 				int toYr,
 				List<IBioSimPlot> locations,
@@ -780,35 +763,40 @@ namespace biosimclient.Main
 		}
 
 
-
 		/**
-		 * By default the climate generation retrieves the observations for the
-		 * dates prior to the current date. If this option is set to true, then 
-		 * the climate is generated from the normals even for dates prior to
-		 * the current date.
 		 * 
 		 * @param bool a boolean
 		 */
+
+
+		/// <summary>
+		/// Force the climate generation for past dailies.
+		/// <br></br>
+		/// <br></br>
+		/// By default the climate generation retrieves the observations for the dates prior to the current date. If this option is set to true, then
+		/// the climate is generated from the disaggregation of normals even for dates prior to the current date.
+		/// </summary>
+		/// <param name="b">a boolean (true to force climate generation or false to use the observed dailies</param>
 		public static void SetForceClimateGenerationEnabled(bool b)
 		{
 			ForceClimateGenerationEnabled = b;
 		}
 
 
-		/**
-		 * This option forces the client to generate weather for past dates instead
-		 * of using the observations. By default, it is disabled
-		 * @return a boolean
-		 */
+		/// <summary>
+		/// Return true if the climate generation for past dailies is enabled or false otherwise.
+		/// </summary>
+		/// <returns>a boolean</returns>
 		public static bool IsForceClimateGenerationEnabled()
 		{
 			return BioSimClient.ForceClimateGenerationEnabled;
 		}
 
-		/**
-		 * This option set the number of stations in the imputation of the climate variables
-		 * @param nbNearestNeighbours an integer between 1 and 35. The default is 4 stations.
-		 */
+
+		/// <summary>
+		/// Set the number of stations used for imputing the meteorological time series in space.
+		/// </summary>
+		/// <param name="nbNearestNeighbours">an integer between 1 and 35. By default, it is set to 4.</param>
 		public static void SetNbNearestNeighbours(int nbNearestNeighbours)
 		{
 			if (nbNearestNeighbours < 1 || nbNearestNeighbours > 35)
@@ -818,10 +806,11 @@ namespace biosimclient.Main
 			NbNearestNeighbours = nbNearestNeighbours;
 		}
 
-		/**
-		 * Returns the number of climate station used in the imputation of the climate variables.
-		 * @return an integer
-		 */
+
+		/// <summary>
+		/// Provide the number of climate stations used for imputing the meteorological time series in space.
+		/// </summary>
+		/// <returns>an integer</returns>
 		public static int GetNbNearestNeighbours()
 		{		
 			if (NbNearestNeighbours.HasValue)
@@ -830,14 +819,34 @@ namespace biosimclient.Main
 				return 4; // default value
 		}
 
+		/// <summary>
+		/// Return true if the local connection is enabled (for test purpose only).
+		/// </summary>
+		/// <returns>a boolean</returns>
 		public static bool IsLocalConnectionEnabled() { return IsLocal; }
 
+		/// <summary>
+		/// Enable/disable the local connection (for test purpose only).
+		/// </summary>
+		/// <param name="b">a boolean: true to enable/false to disable</param>
 		public static void SetLocalConnectionEnabled(bool b) { IsLocal = b; }
 
+		/// <summary>
+		/// Return true if the test mode is enabled (for test purpose only).
+		/// </summary>
+		/// <returns>a boolean</returns>
 		public static bool IsTestModeEnabled() { return IsTesting; }
 
+		/// <summary>
+		/// Enable/disable the test mode (for test purpose only).
+		/// </summary>
+		/// <param name="b">a boolean: true to enable/false to disable</param>
 		public static void SetTestModeEnabled(bool b) { IsTesting = b; }
 
+		/// <summary>
+		/// Compute the time to produce a reply on the server end (for test purpose).
+		/// </summary>
+		/// <returns>a double</returns>
 		public static double GetLastServerRequestDuration()
 		{
 			return totalServerRequestDuration;

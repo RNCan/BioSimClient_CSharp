@@ -20,63 +20,156 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace biosimclient.Main
 {
 
+	/// <summary>
+	/// An enum defining the climate model.
+	/// </summary>
 	public enum ClimateModel
 	{
-		/**
-		 * Hadley climate model
-		 */
+	
+		/// <summary>
+		///  Hadley climate model
+		/// </summary>
 		Hadley,
-		/**
-		 * RCM 4 climate model (default climate model)
-		 */
+		/// <summary>
+		/// RCM 4 climate model (default climate model)
+		/// </summary>
 		RCM4,
-		/**
-		 * GCM 4 climate model
-		 */
+		/// <summary>
+		/// GCM 4 climate model
+		/// </summary>
 		GCM4
 	}
 
+	/// <summary>
+	/// An enum that stands for the months of the year.
+	/// </summary>
 	public enum Month
 	{
+		/// <summary>
+		/// January
+		/// </summary>
 		January,
+		/// <summary>
+		/// February
+		/// </summary>
 		February,
+		/// <summary>
+		/// March
+		/// </summary>
 		March,
+		/// <summary>
+		/// April
+		/// </summary>
 		April,
+		/// <summary>
+		/// May
+		/// </summary>
 		May,
+		/// <summary>
+		/// June
+		/// </summary>
 		June,
+		/// <summary>
+		/// July
+		/// </summary>
 		July,
+		/// <summary>
+		/// August
+		/// </summary>
 		August,
+		/// <summary>
+		/// September
+		/// </summary>
 		September,
+		/// <summary>
+		/// October
+		/// </summary>
 		October,
+		/// <summary>
+		/// November
+		/// </summary>
 		November,
+		/// <summary>
+		/// December
+		/// </summary>
 		December
 	}
 
-	public enum RCP { RCP45, RCP85 }
+	/// <summary>
+	/// An enum that stands for the climate change scenario (according to the IPCC)
+	/// </summary>
+	public enum RCP { 
+		/// <summary>
+		/// RCP 4.5
+		/// </summary>
+		RCP45, 
+		/// <summary>
+		/// RCP 8.5
+		/// </summary>
+		RCP85 }
 
 	internal enum Variable { TN, T, TX, P, TD, H, WS, WD, R, Z, S, SD, SWE, WS2 }
 
+	/// <summary>
+	/// An enum variable that represents the 30-year period covered by the normals
+	/// </summary>
 	public enum Period
 	{
+		/// <summary>
+		/// The 1951-1980 period
+		/// </summary>
 		FromNormals1951_1980,
+		/// <summary>
+		/// The 1961-1990 period
+		/// </summary>
 		FromNormals1961_1990,
+		/// <summary>
+		/// The 1971-2000 period
+		/// </summary>
 		FromNormals1971_2000,
+		/// <summary>
+		/// The 1981-2010 period
+		/// </summary>
 		FromNormals1981_2010,
+		/// <summary>
+		/// The 1991-2020 period
+		/// </summary>
 		FromNormals1991_2020,
+		/// <summary>
+		/// The 2001-2030 period
+		/// </summary>
 		FromNormals2001_2030,
+		/// <summary>
+		/// The 2011-2040 period
+		/// </summary>
 		FromNormals2011_2040,
+		/// <summary>
+		/// The 2021-2050 period
+		/// </summary>
 		FromNormals2021_2050,
+		/// <summary>
+		/// The 2031-2060 period
+		/// </summary>
 		FromNormals2031_2060,
+		/// <summary>
+		/// The 2041-2070 period
+		/// </summary>
 		FromNormals2041_2070,
+		/// <summary>
+		/// The 2051-2080 period
+		/// </summary>
 		FromNormals2051_2080,
+		/// <summary>
+		/// The 2061-2090 period
+		/// </summary>
 		FromNormals2061_2090,
+		/// <summary>
+		/// The 2071-2100 period
+		/// </summary>
 		FromNormals2071_2100
 	}
 
@@ -181,11 +274,24 @@ namespace biosimclient.Main
         }
 	}
 
-
-	public class VariableDescriptor
+	/// <summary>
+	/// A descriptor of the field.
+	/// </summary>
+	public sealed class VariableDescriptor
     {
+		/// <summary>
+		/// The field name.
+		/// </summary>
 		public string FieldName { get; private set; }
+
+		/// <summary>
+		/// A boolean that is true if the field is additive or false otherwise
+		/// </summary>
 		public bool Additive { get; private set; }
+
+		/// <summary>
+		/// A string describing the field.
+		/// </summary>
 		public string Description { get; private set; }
 
 		internal VariableDescriptor(string fieldName, bool additive, string description)

@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace biosimclient.Main
 {
-	internal class BioSimMonthMap : OrderedDictionary  //LinkedHashMap<Month, Map<Variable, Double>>
+	internal sealed class BioSimMonthMap : OrderedDictionary  //LinkedHashMap<Month, Map<Variable, Double>>
 	{
 		internal BioSimMonthMap(BioSimDataSet dataSet) {
 			Dictionary<Variable, int> fieldIndices = new();

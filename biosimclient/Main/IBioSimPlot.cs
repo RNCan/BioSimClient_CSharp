@@ -18,14 +18,12 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace biosimclient.Main
 {
+	/// <summary>
+	/// The interface for compatilibity with the BioSIM Web API.
+	/// </summary>
     public interface IBioSimPlot
     {
 

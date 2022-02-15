@@ -63,7 +63,7 @@ namespace biosimclienttest
 				Assert.IsTrue(errMsg.Contains("the long parameter cannot be parsed") || errMsg.Contains("argument long could not be parsed to a NaN"));
 
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				Assert.Fail("Should have thrown a BioSimClientException instance");
 			}
@@ -86,7 +86,7 @@ namespace biosimclienttest
 				Assert.IsTrue(errMsg.Contains("lat is out of range") || errMsg.Contains("the latitude must range"));
 				Assert.IsTrue(errMsg.Contains("long is out of range") || errMsg.Contains("the longitude must range"));
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				Assert.Fail("Should have thrown a BioSimClientException instance");
 			}
@@ -110,7 +110,7 @@ namespace biosimclienttest
 				Assert.IsTrue(errMsg.Contains("lat is out of range") || errMsg.Contains("the latitude must range"));
 				Assert.IsTrue(errMsg.Contains("long is out of range") || errMsg.Contains("the longitude must range"));
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				Assert.Fail("Should have thrown a BioSimClientException instance");
 			}
@@ -129,7 +129,7 @@ namespace biosimclienttest
 				string errMsg = e.Message;
 				Assert.IsTrue(errMsg.Contains("Error: Model Blabla does not exist"));
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				Assert.Fail("Should have thrown a BioSimClientException instance");
 			}
@@ -148,7 +148,7 @@ namespace biosimclienttest
 				string errMsg = e.Message;
 				Assert.IsTrue(errMsg.Contains("Error: Model Blabla does not exist"));
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				Assert.Fail("Should have thrown a BioSimClientException instance");
 			}

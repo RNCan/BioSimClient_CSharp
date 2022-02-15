@@ -26,8 +26,12 @@ using System.Threading.Tasks;
 
 namespace biosimclient.Main
 {
-    public class BioSimServerException : BioSimException
+    /// <summary>
+    /// A class for exception on the BioSIM Web API end. 
+    /// </summary>
+    public sealed class BioSimServerException : BioSimException
     {
+        /// <inheritdoc />
         public BioSimServerException(string msg) : base(msg)
         {
         }

@@ -26,11 +26,17 @@ using System.Threading.Tasks;
 
 namespace biosimclient.Main
 {
-	public class Observation : IComparable 
+	/// <summary>
+	/// A class for the observations contained in the BioSimDataSet class.
+	/// </summary>
+	public sealed class Observation : IComparable 
 	{
 
 		static List<int> comparableFields = new();
 
+		/// <summary>
+		/// The list of values contained in the Observation instance.
+		/// </summary>
 		public List<object> values;
 
 		internal Observation(object[] obj)
@@ -39,8 +45,7 @@ namespace biosimclient.Main
 			values.AddRange(obj);
 		}
 
-
-
+		/// <inheritdoc />
 		public int CompareTo(object o)
 		{
 			foreach (int index in comparableFields)
@@ -60,21 +65,21 @@ namespace biosimclient.Main
 			return 0;
 		}
 
-		/**
-		 * Converts this observation to an array of Object instances
-		 * @return an Array of Object instances
-		 */
+		/// <summary>
+		/// Convert this observation to an array of Object instances
+		/// </summary>
+		/// <returns>An array of objects</returns>
 		public object[] ToArray()
 		{
 			return values.ToArray();
 		}
 
 
-		/**
-		 * Checks if two observations have the same values.
-		 * @param obs an Observation instance
-		 * @return a boolean
-		 */
+		/// <summary>
+		/// Check if two observations have the same values.
+		/// </summary>
+		/// <param name="obs">An Observation instance</param>
+		/// <returns>a boolean: true if the instances are equal or false otherwise</returns>
 		public bool IsEqualToThisObservation(Observation obs)
 		{
 			if (obs == null)

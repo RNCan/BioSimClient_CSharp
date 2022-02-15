@@ -28,10 +28,21 @@ using System.Threading.Tasks;
 
 namespace biosimclient.Main
 {
-	public class BioSimParameterMap {
+	/// <summary>
+	/// A structure to host the model parameters.
+	/// </summary>
+	public sealed class BioSimParameterMap {
 
+		/// <summary>
+		/// The OrderedDictionary instance that contains the parameters.
+		/// </summary>
 		public OrderedDictionary InnerMap { get; private set; } = new();
 
+		/// <summary>
+		/// Add a parameter to the InnerMap.
+		/// </summary>
+		/// <param name="parameterName">a string</param>
+		/// <param name="value">an object that stands for the value</param>
 		public void AddParameter(string parameterName, object value)
 		{
 			if (IsNumber(value) || value.GetType() == typeof(string))
@@ -57,7 +68,10 @@ namespace biosimclient.Main
 					|| value is BigInteger;
 		}
 
-
+		/// <summary>
+		/// Provide a customized string for this class.
+		/// </summary>
+		/// <returns></returns>
 		public override string ToString()
 		{
 			StringBuilder sb = new();
@@ -77,6 +91,10 @@ namespace biosimclient.Main
 				return sb.ToString();
 		}
 
+		/// <summary>
+		/// Return true if the BioSimParmaeterMap instance is empty or false otherwise.
+		/// </summary>
+		/// <returns>a boolean</returns>
 		public bool IsEmpty()
         {
 			return InnerMap.Count == 0;

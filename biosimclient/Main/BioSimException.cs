@@ -26,8 +26,15 @@ using System.Threading.Tasks;
 
 namespace biosimclient.Main
 {
+    /// <summary>
+    /// The basic class for exception either on the server or the client end.
+    /// </summary>
     public class BioSimException : Exception
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="msg">the error message</param>
         protected BioSimException(string msg) : base(msg)
         {
         }

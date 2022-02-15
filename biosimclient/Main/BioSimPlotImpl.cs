@@ -26,14 +26,30 @@ using System.Threading.Tasks;
 
 namespace biosimclient.Main
 {
+	/// <summary>
+	/// A basic implementation of the IBioSimPlot interface.
+	/// </summary>
 	public class BioSimPlotImpl : IBioSimPlot
 	{
-
+		/// <summary>
+		/// The elevation above sea level (m)
+		/// </summary>
 		public double ElevationM { get; private set; }
+		/// <summary>
+		/// The latitude in degrees.
+		/// </summary>
 		public double Latitude { get; private set; }
+		/// <summary>
+		/// The longitude in degrees.
+		/// </summary>
 		public double Longitude { get; private set; }
 
-
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="latitudeDeg"></param>
+		/// <param name="longitudeDeg"></param>
+		/// <param name="elevationM"></param>
 		public BioSimPlotImpl(double latitudeDeg, double longitudeDeg, double elevationM)
 		{
 			Latitude = latitudeDeg;
@@ -41,20 +57,26 @@ namespace biosimclient.Main
 			ElevationM = elevationM;
 		}
 
-
+		/// <summary>
+		/// Provide a customized string for this class.
+		/// </summary>
+		/// <returns></returns>
 		public override string ToString() { return Latitude + "_" + Longitude + "_" + ElevationM; }
 
-        public double GetElevationM()
+		/// <inheritdoc />
+		public double GetElevationM()
         {
             return ElevationM;
         }
 
-        public double GetLatitudeDeg()
+		/// <inheritdoc />
+		public double GetLatitudeDeg()
         {
             return Latitude;
         }
 
-        public double GetLongitudeDeg()
+		/// <inheritdoc />
+		public double GetLongitudeDeg()
         {
             return Longitude;
         }

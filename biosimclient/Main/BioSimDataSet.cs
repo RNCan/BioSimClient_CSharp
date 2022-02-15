@@ -21,18 +21,17 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace biosimclient.Main
 {
-	public class BioSimDataSet 
+	/// <summary>
+	/// A structure to host the data returned by the BioSIM Web API.
+	/// </summary>
+	public sealed class BioSimDataSet 
 	{
-
-		protected List<String> fieldNames;
-		protected List<Type> fieldTypes;
-		protected List<Observation> observations;
+		private List<string> fieldNames;
+		private List<Type> fieldTypes;
+		private List<Observation> observations;
 
 		/// <summary>
 		/// Only constructor with the field names.
@@ -94,11 +93,19 @@ namespace biosimclient.Main
 				SetClassOfThisField(j);
 		}
 
+		/// <summary>
+		/// Return the list of observations contained in the BioSimDataSet instance.
+		/// </summary>
+		/// <returns>a list of Observation instances</returns>
 		public List<Observation> GetObservations()
 		{
 			return observations;
 		}
 
+		/// <summary>
+		/// Add an observation to the BioSimDataSet instance.
+		/// </summary>
+		/// <param name="observationFrame">an array of objects</param>
 		public void AddObservation(object[] observationFrame)
 		{
 			ParseDifferentFields(observationFrame);
@@ -139,7 +146,15 @@ namespace biosimclient.Main
 			}
 		}
 
-
+		/// <summary>
+		/// Return the value for a particular observation and field in the BioSimDataSet instance.
+		/// <br></br>
+		/// <br></br>
+		/// The object returned by this method needs to be casted in the proper type.
+		/// </summary>
+		/// <param name="i">The index of the observation (starting from 0)</param>
+		/// <param name="j">The index of the field (starting from 0)</param>
+		/// <returns>an object</returns>
 		public object GetValueAt(int i, int j)
 		{
 			return observations[i].values[j];
@@ -232,13 +247,19 @@ namespace biosimclient.Main
 			}
 		}
 
-
 		/**
-		 * This method returns a list of the values in a particular field.
-		 * @param i the field id
-		 * @return a List of object instance
-		 */
-		public List<Object> getFieldValues(int i)
+ * This method returns a list of the values in a particular field.
+ * @param i the field id
+ * @return a List of object instance
+ */
+
+
+		/// <summary>
+		/// Return the list of values in a particular field.
+		/// </summary>
+		/// <param name="i">An index of the field (starting from 0)</param>
+		/// <returns></returns>
+		public List<object> GetFieldValues(int i)
 		{
 			List<object> objs = new();
 			foreach (Observation obs in observations)
@@ -260,11 +281,13 @@ namespace biosimclient.Main
 		}
 
 		/// <summary>
-		///  Converts the DataSet instance into a Map. There should not be any deplicate entry. 
-		///  Otherwise the method returns an Exception.
+		///  Convert the DataSet instance into a Map. 
+		///  <br></br>
+		///  <br></br>
+		///  There should not be any deplicate entry. Otherwise the method returns an Exception.
 		/// </summary>
-		/// <returns></returns>
-		public OrderedDictionary getMap()
+		/// <returns>An OrderedDictionary instance</returns>
+		public OrderedDictionary GetMap()
 		{
 			OrderedDictionary outputMap = new();
 			object[] rec;
@@ -315,7 +338,13 @@ namespace biosimclient.Main
 			return false;
 		}
 
-        public static BioSimDataSet ConvertLinkedHashMapToBioSimDataSet(OrderedDictionary map)     // TODO MF2022-01-27 should be ordereddictionary
+
+		/// <summary>
+		/// Convert an OrderedDictionary instance into a BioSimDataSet if possible. 
+		/// </summary>
+		/// <param name="map">the input OrderedDictionary instance</param>
+		/// <returns>A BioSimDataSet instance</returns>
+        public static BioSimDataSet ConvertLinkedHashMapToBioSimDataSet(OrderedDictionary map)    
         {
 			BioSimDataSet outputDataSet = null;
 			List<Object> observation = new();
