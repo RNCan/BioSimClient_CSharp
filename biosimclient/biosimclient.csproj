@@ -1,10 +1,26 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <Version>1.1</Version>
+    <Authors>Mathieu Fortin</Authors>
+    <Company>Canadian Forest Service</Company>
+    <Description>A client for the BioSIM Web API.
+BioSIM is a weather generator that makes it possible to impute meteorological time series to any location in North America.</Description>
+    <Copyright>Copyright (c) 2022 Her Majesty the Queen in right of Canada</Copyright>
+    <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/RNCan/BioSimClient_CSharp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/RNCan/BioSimClient_CSharp</RepositoryUrl>
+    <RepositoryType>GIT</RepositoryType>
+    <PackageTags>Climate Simulation</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\matforti\Documents\7_Developpement\CSharpProjects\BioSimClient_CSharp\biosimclient\biosimclient.xml</DocumentationFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>C:\Users\matforti\Documents\7_Developpement\CSharpProjects\BioSimClient_CSharp\biosimclient\biosimclient.xml</DocumentationFile>
   </PropertyGroup>
 
