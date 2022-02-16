@@ -1,0 +1,3 @@
+In order to create the Nuget package:
+	1- At the solution root, enter "dotnet pack biosimclient -c Release" 
+	2- In the folder where the nuget package is located, enter "nuget push biosimclient.1.1.0.nupkg [API KEY] -Source https://api.nuget.org/v3/index.json

@@ -2,17 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <PackageId>biosimclient</PackageId>
     <Version>1.1</Version>
     <Authors>Mathieu Fortin</Authors>
     <Company>Canadian Forest Service</Company>
-    <Description>A client for the BioSIM Web API.
-BioSIM is a weather generator that makes it possible to impute meteorological time series to any location in North America.</Description>
+    <Description>A client for the BioSIM Web API. BioSIM is a weather generator that makes it possible to impute meteorological time series to any location in North America.</Description>
     <Copyright>Copyright (c) 2022 Her Majesty the Queen in right of Canada</Copyright>
     <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/RNCan/BioSimClient_CSharp</PackageProjectUrl>
     <RepositoryUrl>https://github.com/RNCan/BioSimClient_CSharp</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
-    <PackageTags>Climate Simulation</PackageTags>
+    <PackageTags>BioSIM RNCan NRCan</PackageTags>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
