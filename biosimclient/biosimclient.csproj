@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <PackageId>biosimclient</PackageId>
-    <Version>1.1</Version>
+    <Version>1.1.1</Version>
     <Authors>Mathieu Fortin</Authors>
     <Company>Canadian Forest Service</Company>
     <Description>A client for the BioSIM Web API. BioSIM is a weather generator that makes it possible to impute meteorological time series to any location in North America.</Description>

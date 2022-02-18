@@ -111,11 +111,11 @@ namespace biosimclient.Main
 
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		private static BioSimStringList GetStringFromConnection(string api, string query) // TODO should throws BioSimClientException, BioSimServerException
+		private static BioSimStringList GetStringFromConnection(string api, string query) 
 		{
 			//		long initTime = System.currentTimeMillis();
 			InetSocketAddress address = IsLocal ? BioSimClient.LocalAddress : BioSimClient.REpiceaAddress;
-			String urlString = "http://" + address.Hostname + ":" + address.Port + "/" + api;
+			String urlString = "http://" + address.Hostname + ":" + address.Port + "/BioSIM/" + api;
 			urlString = AddQueryIfAny(urlString, query);
 			HttpResponseMessage response = null;
 			try
@@ -164,7 +164,7 @@ namespace biosimclient.Main
             }
 		}
 
-		private static int getMaximumNbLocationsPerBatchNormals() //throws BioSimClientException, BioSimServerException {
+		private static int getMaximumNbLocationsPerBatchNormals() 
 		{
 			return MAXIMUM_NB_LOCATIONS_PER_BATCH_NORMALS;
 		}
@@ -295,9 +295,8 @@ namespace biosimclient.Main
 				List<IBioSimPlot> locations,
 				RCP? rcp,
 				ClimateModel? climModel,
-				List<Month> averageOverTheseMonths) // throws BioSimClientException, BioSimServerException 
+				List<Month> averageOverTheseMonths) 
 		{
-			//			LinkedHashMap<BioSimPlot, BioSimDataSet> outputMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 			OrderedDictionary outputMap = new();
 			StringBuilder query = ConstructCoordinatesQuery(locations);
 			query.Append("&" + EnumUtilities.GetQueryPartForThisPeriod(period));
@@ -333,7 +332,6 @@ namespace biosimclient.Main
 			}
 			else
 			{
-//				LinkedHashMap<BioSimPlot, BioSimDataSet> formattedOutputMap = new LinkedHashMap<BioSimPlot, BioSimDataSet>();
 				OrderedDictionary formattedOutputMap = new();
 				foreach (IBioSimPlot location in outputMap.Keys)
 				{
@@ -423,15 +421,6 @@ namespace biosimclient.Main
 		{
 			return GetNormals(period, locations, rcp, climModel, AllMonths);
 		}
-
-
-
-		/**
-		 * Returns the names of the available models. This is a clone of the
-		 * true list to avoid any intended changes in the model list.
-		 * 
-		 * @return a List of String instances
-		 */
 
 
 		/// <summary>
