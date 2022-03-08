@@ -39,3 +39,5 @@ An example of implementation is:
 
 The myWeather object is an OrderedDictionary with model names as keys and OrderedDictionary instances as values. These nested OrderedDictionary instances have 
 the BioSimPlot as keys and BioSimDataSet instances as values. The BioSimDataSet instance contains the climate data.
+
+The C# documentation is available at https://mrnfforesttools.sourceforge.io/biosimclient/csharpdoc/.
