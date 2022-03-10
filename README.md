@@ -22,7 +22,7 @@ License for more details.
 
 Please see the license at http://www.gnu.org/copyleft/lesser.html.
 
-The biosimclient library has a dependence on 
+The biosimclient library has a dependency on 
   - The Newtonsoft JSON.NET library available at https://www.newtonsoft.com/json. This library is licensed under MIT (Copyright (c) 2007 James Newton-King). 
   
 An example of implementation is:
