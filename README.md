@@ -1,4 +1,5 @@
 A C# client for the BioSIM Web API
+===================================
 
 This library is related to the BioSIM application. BioSIM is a software developed by the Canadian Forest Service. It contains a weather generator and various models. 
 More information about the application is available at https://cfs.nrcan.gc.ca/projects/133. The Web API is an online service that can process http request and return 
@@ -41,3 +42,5 @@ The myWeather object is an OrderedDictionary with model names as keys and Ordere
 the BioSimPlot as keys and BioSimDataSet instances as values. The BioSimDataSet instance contains the climate data.
 
 The C# documentation is available at https://mrnfforesttools.sourceforge.io/biosimclient/csharpdoc/.
+
+More information on BioSIM Web API and its clients can be found at https://github.com/RNCan/BioSimClient_CSharp/wiki.
